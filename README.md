@@ -9,4 +9,6 @@ Angelisium docker web service.
  - start traefik with the `docker-compose up -d` command in `traefik` folder.
 
 ## Soon
+ - add tcp or ssh proxy to `providers.docker.endpoint`
+ - setup authelia to privatize the dashboard
  - Mieux rédiger le readme ;-;.
