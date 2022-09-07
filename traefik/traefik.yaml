@@ -1,0 +1,57 @@
+################################################################
+# Global configuration
+################################################################
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: true
+
+api:
+  dashboard: true
+
+################################################################
+# EntryPoints configuration
+################################################################
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+    http:
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: angelisium.fr
+            sans:
+              - '*.angelisium.fr'
+
+################################################################
+# Let's Encrypt configuration
+################################################################
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      storage: acme.json
+      email: angelisium@daum.net
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      dnsChallenge:
+        provider: cloudflare
+
+################################################################
+# Docker configuration backend
+################################################################
+
+providers:
+  docker:
+    exposedByDefault: false
+    # endpoint: tcp://dockerproxy:2375
+    endpoint: unix:///var/run/docker.sock
+    defaultRule: Host(`{{ .Name }}.angelisium.fr`)
