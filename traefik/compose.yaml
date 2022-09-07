@@ -1,0 +1,23 @@
+services:
+  traefik:
+    image: traefik:v2.8
+    container_name: traefik
+    restart: unless-stopped
+    # depends_on:
+    #   - authelia
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yaml:/traefik.yaml:ro
+      - ./acme.json:/acme.json
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.angelisium.fr`)
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.service=api@internal
+      # - traefik.http.routers.dashboard.middlewares=authelia@docker
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_API_KEY=${CF_API_KEY}
+    ports:
+      - 80:80
+      - 443:443
