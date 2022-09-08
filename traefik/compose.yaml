@@ -7,7 +7,7 @@ services:
   ################################################################
   socket-proxy:
     image: tecnativa/docker-socket-proxy
-    container_name: traefik
+    container_name: socket-proxy
     restart: unless-stopped
     environment:
       - CONTAINERS=1
@@ -35,7 +35,7 @@ services:
       - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.service=api@internal
-      # - traefik.http.routers.dashboard.middlewares=authelia@docker
+      - traefik.http.routers.dashboard.middlewares=authelia@docker
     command:
       - --entrypoints.https.http.tls.domains[0].main=${DOMAIN}
       - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN}
@@ -46,3 +46,34 @@ services:
     ports:
       - 80:80
       - 443:443
+
+  ################################################################
+  # Authentication configuration
+  ################################################################
+  authelia:
+    image: authelia/authelia
+    container_name: authelia
+    restart: unless-stopped
+    volumes:
+      - ./authelia.yaml:/config/configuration.yml
+      - ./users.yaml:/config/users.yaml
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.authelia.rule=Host(`authelia.${DOMAIN}`)
+      - traefik.http.routers.authelia.entrypoints=websecure
+      - traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://authelia.${DOMAIN}
+      - traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true
+      - traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email
+    environment:
+      - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
+      - AUTHELIA_DEFAULT_REDIRECTION_URL=https://${DOMAIN}
+      - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
+      - AUTHELIA_SESSION_DOMAIN=${DOMAIN}
+      - AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+      - TZ=Europe/Paris
+    expose:
+      - 9091
+    healthcheck:
+      disable: true
