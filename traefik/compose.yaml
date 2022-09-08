@@ -1,14 +1,35 @@
+networks:
+  proxy:
+
 services:
+  ################################################################
+  # Proxy configuration
+  ################################################################
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: traefik
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  ################################################################
+  # Edge Router configuration
+  ################################################################
   traefik:
-    image: traefik:v2.8
+    image: traefik
     container_name: traefik
     restart: unless-stopped
     # depends_on:
     #   - authelia
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yaml:/traefik.yaml:ro
       - ./acme.json:/acme.json
+    networks:
+      - proxy
     labels:
       - traefik.enable=true
       - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
