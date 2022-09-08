@@ -11,10 +11,14 @@ services:
       - ./acme.json:/acme.json
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dashboard.rule=Host(`dashboard.angelisium.fr`)
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.service=api@internal
       # - traefik.http.routers.dashboard.middlewares=authelia@docker
+    command:
+      - --entrypoints.https.http.tls.domains[0].main=${DOMAIN}
+      - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN}
+      - --providers.docker.defaultRule=Host(`{{ .Name }}.${DOMAIN}`)
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
