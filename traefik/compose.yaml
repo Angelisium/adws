@@ -23,8 +23,8 @@ services:
     image: traefik
     container_name: traefik
     restart: unless-stopped
-    # depends_on:
-    #   - authelia
+    depends_on:
+      - authelia
     volumes:
       - ./traefik.yaml:/traefik.yaml:ro
       - ./acme.json:/acme.json
@@ -32,14 +32,14 @@ services:
       - proxy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
+      - traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.middlewares=authelia@docker
     command:
       - --entrypoints.https.http.tls.domains[0].main=${DOMAIN}
       - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN}
-      - --providers.docker.defaultRule=Host(`{{ .Name }}.${DOMAIN}`)
+      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.l.angelisium.fr`)'
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
