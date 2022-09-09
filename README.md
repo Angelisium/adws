@@ -2,10 +2,20 @@
 Angelisium docker web service.
 
 ## Quick Start
- - edit `/traefik/.env` with your own cloudflare info and your own domain name.
- - start traefik with the `cd traefik && docker-compose up -d` command.
+### Windows :
+ - `copy /server/sample.env /server/.env`
+ - edit the `/server/.env` file with your own proxy, cloudflare and authelia info.
+ - `copy /server/users.sample.yaml /server/users.yaml`
+ - edit the `/server/users.yaml` with your own info. Look at the [documentation](https://www.authelia.com/reference/guides/passwords/#passwords) to generate your own password.
+ - (Optionally) delete useless files `del /server/sample.env /server/users.sample.yaml`
+ - start the server services with `cd server && docker-compose up -d`
+### Unix :
+ - `cp /server/sample.env /server/.env`
+ - edit the `/server/.env` file with your own proxy, cloudflare and authelia info.
+ - `cp /server/users.sample.yaml /server/users.yaml`
+ - edit the `/server/users.yaml` with your own info. Look at the [documentation](https://www.authelia.com/reference/guides/passwords/#passwords) to generate your own password.
+ - (Optionally) delete useless files `rm /server/sample.env /server/users.sample.yaml`
+ - start the server services with `cd server && docker-compose up -d`
 
 ## Soon
- - add tcp or ssh proxy to `providers.docker.endpoint`
- - setup authelia to privatize the dashboard
  - Mieux rédiger le readme ;-;.
