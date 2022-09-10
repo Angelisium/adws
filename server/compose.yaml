@@ -1,5 +1,6 @@
 networks:
   proxy:
+    external: true
 
 services:
   ################################################################
@@ -39,7 +40,7 @@ services:
     command:
       - --entrypoints.https.http.tls.domains[0].main=${DOMAIN}
       - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN}
-      - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.l.angelisium.fr`)'
+      - --providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.l.angelisium.fr`)
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
