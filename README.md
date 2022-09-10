@@ -3,8 +3,7 @@ Angelisium docker web service.
 
 ## Quick Start
 ### Windows :
- - `cd server && docker-compose exec traefik sh` then `chmod 600 /acme.json`.
- - `cd ../`
+ - `cd server && docker-compose exec traefik sh` then `chmod 600 /acme.json`, `exit` and `cd ../`
  - `copy /server/sample.env /server/.env`
  - edit the `/server/.env` file with your own proxy, cloudflare and authelia info.
  - `copy /server/users.sample.yaml /server/users.yaml`
