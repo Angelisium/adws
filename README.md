@@ -12,7 +12,7 @@ Example :
 users:
   Angelisium:
     displayname: "Angelisium"
-	# password is Admin
+    # password is Admin
     password: "$argon2id$v=19$m=65536,t=3,p=2$c2laYXY3WlYwRGlkSWI1cA$jFNUEaXu8A2ZaO+W6m+Ct6B5db0girQZxnYlBWj/zHU"
     email: angelisium@daum.net
     groups: []
@@ -52,7 +52,7 @@ AUTHELIA_JWT_SECRET=
 AUTHELIA_SESSION_SECRET=
 AUTHELIA_STORAGE_ENCRYPTION_KEY=
 ```
-> **Note**
+> **Note**   
 > Of course, omitting all or part of this configuration will result in unexpected behavior.
 
 Once the configuration is done, just start the containers with `docker-compose up -d` and enjoy ❤
