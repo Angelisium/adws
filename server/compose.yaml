@@ -69,8 +69,8 @@ services:
       - --providers.docker.endpoint=tcp://socket-proxy:2375
       - --providers.docker.defaultRule=Host(`{{ first (splitList "-" (normalize .Name)) }}.${DOMAIN}`)
     environment:
-      - CF_API_EMAIL=${CF_API_EMAIL}
-      - CF_API_KEY=${CF_API_KEY}
+      CF_API_EMAIL: ${CF_API_EMAIL}
+      CF_API_KEY: ${CF_API_KEY}
     ports:
       - 80:80
       - 443:443
@@ -94,13 +94,48 @@ services:
       - traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true
       - traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email
     environment:
-      - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
-      - AUTHELIA_DEFAULT_REDIRECTION_URL=https://${DOMAIN}
-      - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
-      - AUTHELIA_SESSION_DOMAIN=${DOMAIN}
-      - AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
-      - TZ=Europe/Paris
+      AUTHELIA_JWT_SECRET: ${AUTHELIA_JWT_SECRET}
+      AUTHELIA_DEFAULT_REDIRECTION_URL: https://${DOMAIN}
+      AUTHELIA_SESSION_SECRET: ${AUTHELIA_SESSION_SECRET}
+      AUTHELIA_SESSION_DOMAIN: ${DOMAIN}
+      AUTHELIA_STORAGE_ENCRYPTION_KEY: ${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+      TZ: Europe/Paris
     expose:
       - 9091
     healthcheck:
       disable: true
+
+  ##############################################################################
+  # NoSQL database configuration                                               #
+  ##############################################################################
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - proxy
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+
+  mongodb:
+    image: mongo-express
+    container_name: mongodb
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - authelia
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mongodb.entrypoints=websecure
+      - traefik.http.routers.mongodb.middlewares=authelia@docker
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
+    expose:
+      - 8081
