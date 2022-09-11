@@ -1,7 +1,0 @@
-users:
-  Angelisium:
-    displayname: "Angelisium"
-    password: "$argon2id$v=19$m=65536,t=3,p=2$c2laYXY3WlYwRGlkSWI1cA$jFNUEaXu8A2ZaO+W6m+Ct6B5db0girQZxnYlBWj/zHU" # Admin
-    email: angelisium@daum.net
-    groups:
-      - administrator
