@@ -3,9 +3,9 @@ networks:
     external: true
 
 services:
-  ################################################################
-  # Proxy configuration
-  ################################################################
+  ##############################################################################
+  # Proxy configuration                                                        #
+  ##############################################################################
   socket-proxy:
     image: tecnativa/docker-socket-proxy
     container_name: socket-proxy
@@ -17,17 +17,17 @@ services:
     environment:
       - CONTAINERS=1
 
-  ################################################################
-  # Edge Router configuration
-  ################################################################
+  ##############################################################################
+  # Edge Router configuration                                                  #
+  ##############################################################################
   traefik:
     image: traefik
     container_name: traefik
     restart: unless-stopped
     depends_on:
       - authelia
+      - socket-proxy
     volumes:
-      - ./traefik.yaml:/traefik.yaml:ro
       - ./acme.json:/acme.json
     networks:
       - proxy
@@ -38,9 +38,36 @@ services:
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.middlewares=authelia@docker
     command:
-      - --entrypoints.https.http.tls.domains[0].main=${DOMAIN}
-      - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN}
-      - --providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service"}}.l.angelisium.fr`)
+      ##########################################################################
+      # Traefik - Global configuration                                         #
+      ##########################################################################
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=true
+      - --api.dashboard=true
+      - --log.level=DEBUG
+      ##########################################################################
+      # Traefik - EntryPoints configuration                                    #
+      ##########################################################################
+      - --entryPoints.web.address=:80
+      - --entryPoints.web.http.redirections.entryPoint.to=websecure
+      - --entryPoints.web.http.redirections.entryPoint.scheme=https
+      - --entryPoints.web.http.redirections.entryPoint.permanent=true
+      - --entryPoints.websecure.address=:443
+      - --entryPoints.websecure.http.tls.certResolver=letsencrypt
+      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN}
+      ##########################################################################
+      # Traefik - Let's Encrypt configuration                                  #
+      ##########################################################################
+      - --certificatesResolvers.letsencrypt.acme.storage=acme.json
+      - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare
+      ##########################################################################
+      # Traefik - Docker configuration backend                                 #
+      ##########################################################################
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.endpoint=tcp://socket-proxy:2375
+      - --providers.docker.defaultRule=Host(`{{ first (splitList "-" (normalize .Name)) }}.${DOMAIN}`)
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_API_KEY=${CF_API_KEY}
@@ -48,9 +75,9 @@ services:
       - 80:80
       - 443:443
 
-  ################################################################
-  # Authentication configuration
-  ################################################################
+  ##############################################################################
+  # Authentication configuration                                               #
+  ##############################################################################
   authelia:
     image: authelia/authelia
     container_name: authelia
@@ -62,7 +89,6 @@ services:
       - proxy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.authelia.rule=Host(`authelia.${DOMAIN}`)
       - traefik.http.routers.authelia.entrypoints=websecure
       - traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://authelia.${DOMAIN}
       - traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true
