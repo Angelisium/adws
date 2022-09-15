@@ -1,4 +1,6 @@
+/server/mariadb/
 /server/mongodb/
+/websites/
 users.yaml
 acme.json
 .env
