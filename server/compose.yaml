@@ -15,7 +15,7 @@ services:
     networks:
       - proxy
     environment:
-      - CONTAINERS=1
+      CONTAINERS: 1
 
   ##############################################################################
   # Edge Router configuration                                                  #
@@ -119,6 +119,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    ports:
+      - 27017:27017
 
   mongodb:
     image: mongo-express
@@ -139,3 +141,40 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
     expose:
       - 8081
+
+  ##############################################################################
+  # SQL database configuration                                                 #
+  ##############################################################################
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    networks:
+      - proxy
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_PASSWORD}
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+      - authelia
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.phpmyadmin.entrypoints=websecure
+      - traefik.http.routers.phpmyadmin.middlewares=authelia@docker
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mariadb
+      PMA_USER: root
+      PMA_PASSWORD: ${MARIADB_PASSWORD}
+    expose:
+      - 8080
