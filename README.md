@@ -12,7 +12,7 @@ Example :
 users:
   Angelisium:
     displayname: "Angelisium"
-    # password is Admin
+    # this example password is Admin
     password: "$argon2id$v=19$m=65536,t=3,p=2$c2laYXY3WlYwRGlkSWI1cA$jFNUEaXu8A2ZaO+W6m+Ct6B5db0girQZxnYlBWj/zHU"
     email: angelisium@daum.net
     groups: []
