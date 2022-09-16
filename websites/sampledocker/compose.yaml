@@ -1,0 +1,13 @@
+networks:
+  default:
+    name: proxy
+    external: true
+
+services:
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.entrypoints=websecure
