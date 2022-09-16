@@ -1,0 +1,22 @@
+networks:
+  default:
+    name: proxy
+    external: true
+
+services:
+  test:
+    image: nginx
+    container_name: test
+    restart: unless-stopped
+    volumes:
+      - .:/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.test.entrypoints=websecure
+    expose:
+       - 80
+  php:
+    image: php:8.1-fpm
+    volumes:
+      - .:/www
