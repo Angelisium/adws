@@ -51,6 +51,23 @@ CF_API_EMAIL=
 AUTHELIA_JWT_SECRET=
 AUTHELIA_SESSION_SECRET=
 AUTHELIA_STORAGE_ENCRYPTION_KEY=
+
+################################################################################
+# MongoDB configuration                                                        #
+################################################################################
+
+# For  the  password,  it's strongly  recommended  to use a random  alphanumeric
+# string of 64 characters or more.
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+
+################################################################################
+# MariaDB configuration                                                        #
+################################################################################
+
+# For  the  password,  it's strongly  recommended  to use a random  alphanumeric
+# string of 64 characters or more.
+MARIADB_PASSWORD=
 ```
 > **Note**   
 > Of course, omitting all or part of this configuration will result in unexpected behavior.
