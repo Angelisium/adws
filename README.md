@@ -76,6 +76,4 @@ Once the configuration is done, just start the containers with `docker-compose u
 
 ### Soon :
  - add "how to expose a web project" explanations.
- - add a global mongodb and mongo-express as document-oriented DBMS
- - add a global mariadb and phpmyadmin as RDBMS
  - ???
