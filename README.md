@@ -76,4 +76,5 @@ Once the configuration is done, just start the containers with `docker-compose u
 
 ### Soon :
  - add "how to expose a web project" explanations.
+ - explain how start sample (eg samplephp => `docker-compose build && docker-compose up -d`)
  - ???
