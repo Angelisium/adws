@@ -17,6 +17,6 @@ services:
     expose:
        - 80
   php:
-    image: php:8.1-fpm
+    build: .
     volumes:
       - .:/www
