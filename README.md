@@ -1,12 +1,24 @@
 # adws
 Angelisium docker web service.
 
+## What is it?
+As a web  developer, I work  with some  different  technologies  and it would be
+tedious to  configure a  server able  to host  all the  personal projects  of my
+portfolio.
+
+This is why I  opted for docker to  containerize my  projects to  simplify their
+production  release.  I also use  this configuration  in local to  limit  with a
+dedicated domain the number of tools needed to develop my project.
+
 ## How to get started
 
-The first step to get started is to create the `/server/acme.json`, `/server/.env` and `/server/users.yaml` files.
-The `/server/acme.json` file is an empty file intended to receive information for certification with cloudflare.
-Make sure you create it with read and write permissions, with `touch /server/acme.json && chmod 600 /server/acme.json` on UNIX for example.
-For the `/server/users.yaml`, please refer to the [documentation](https://www.authelia.com/reference/guides/passwords/#yaml-format).
+The   first  step   to  get started  is  to   create   the  `/server/acme.json`,
+`/server/.env`  and `/server/users.yaml` files. The  `/server/acme.json` file is
+an empty file intended to receive information for certification with cloudflare.
+Make   sure   you   create   it  with   read   and   write   permissions,   with
+`touch /server/acme.json && chmod 600 /server/acme.json` on  UNIX  for  example.
+For the `/server/users.yaml`, please refer to the [documentation](
+https://www.authelia.com/reference/guides/passwords/#yaml-format).   
 Example :
 ```yaml
 users:
@@ -26,7 +38,7 @@ Finally, the `/server/.env` file must contain the following information:
 # Your domain name, e.g. mywebsite.local
 # PS : As  the  TLS  certificates  allocation  is under  the  responsibility  of
 # cloudflare,  the  domain  must  be  registered/associate  on  your  cloudflarе
-# account.
+# account. (no TLS support for domains .tk, .ml, .ga, .cf and .gq)
 DOMAIN=
 
 ################################################################################
