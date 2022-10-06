@@ -1,0 +1,18 @@
+networks:
+  default:
+    name: proxy
+    external: true
+
+services:
+  samplerust:
+    build: .
+    container_name: samplerust
+    restart: unless-stopped
+    command: bash -c "cargo run"
+    # environment:
+    #   - DATABASE_URL=mysql://root:root@mysql/items
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.samplerust.entrypoints=websecure
+    expose:
+      - 6666
