@@ -7,8 +7,8 @@ tedious to  configure a  server able  to host  all the  personal projects  of my
 portfolio.
 
 This is why I  opted for docker to  containerize my  projects to  simplify their
-production  release.  I also use  this configuration  in local to  limit  with a
-dedicated domain the number of tools needed to develop my project.
+production  release. I also  use this  configuration in  local with  a dedicated
+domain to limit the number of tools needed to develop my project.
 
 ## How to get started
 
