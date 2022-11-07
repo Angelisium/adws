@@ -1,0 +1,15 @@
+networks:
+  default:
+    name: proxy
+    external: true
+
+services:
+  samplets:
+    build: .
+    container_name: samplets
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.samplets.entrypoints=websecure
+    expose:
+       - 3000
