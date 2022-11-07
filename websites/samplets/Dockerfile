@@ -7,7 +7,7 @@ COPY ./source ./source
 RUN npm install typescript
 RUN npx tsc
 
-FROM node
+FROM node:alpine
 WORKDIR /application
 COPY package*.json ./
 RUN npm install --production
