@@ -10,7 +10,7 @@ RUN npx tsc
 FROM node:alpine
 WORKDIR /application
 COPY package*.json ./
-RUN npm install --production
+RUN npm install --omit=dev
 COPY --from=builder ./typescript/release ./release
 COPY ./public ./public
-CMD ["npm", "start"]
+CMD ["node", "release/main.js"]
