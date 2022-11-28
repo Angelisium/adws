@@ -10,6 +10,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@mikro-orm/core": "^5.5.2",
+		"@mikro-orm/mongodb": "^5.5.2",
 		"express": "^4.18.2"
 	},
 	"devDependencies": {
