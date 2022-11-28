@@ -8,8 +8,13 @@ services:
     build: .
     container_name: samplets
     restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HTTP_PORT: 8080
+      MONGO_DB_NAME: sampledbname
+      MONGO_DB_URL: mongodb://mongo:27017
     labels:
       - traefik.enable=true
       - traefik.http.routers.samplets.entrypoints=websecure
     expose:
-       - 3000
+       - 8080
